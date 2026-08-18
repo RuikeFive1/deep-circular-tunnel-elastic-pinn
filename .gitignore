@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.idea/
+.vscode/
+.ipynb_checkpoints/
+.pytest_cache/
+.DS_Store
+
+# Local scratch outputs. The curated example figures and checkpoint remain tracked.
+tmp/
+*.log
+
