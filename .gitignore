@@ -9,4 +9,4 @@ __pycache__/
 # Local scratch outputs. The curated example figures and checkpoint remain tracked.
 tmp/
 *.log
-
+rectangular_elastic/checkpoints/*_smoke.pth

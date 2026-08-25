@@ -1,8 +1,15 @@
-# Deep Circular Tunnel Elastic PINN
+# Deep Tunnel Elastic PINN Reproductions
 
-这是深埋圆形巷道纯弹性阶段的 PyTorch PINN/APINN 复现整理版。仓库保留最初模型的网络结构、物理残差、采样与优化流程，并附带已训练权重、场图脚本以及 PINN 与有限圆环解析解的误差对比脚本。
+这是深埋巷道纯弹性阶段的 PyTorch PINN/APINN 复现仓库，现包含两个相互独立的算例：
 
-## 计算工况
+| 算例 | 位置 | 验证基准 |
+|---|---|---|
+| 深埋圆形巷道 | 仓库根目录 | 有限圆环解析解 |
+| 深埋正方形/矩形巷道 | [`rectangular_elastic/`](rectangular_elastic/) | FLAC3D Stage A 最终场 |
+
+原圆形算例仍保留在仓库根目录，既有文件路径、命令和 GitHub 地址均未改变。矩形算例作为新增子目录，不覆盖圆形模型。
+
+## 圆形巷道工况
 
 - 四分之一圆环计算域：洞半径 `a = 1 m`，外边界半径 `R = 3 m`。
 - 初始静水应力：`p0 = 10 MPa`。
@@ -35,6 +42,7 @@
 |-- train_deep.py
 |-- viz_deep.py
 |-- plot_deep_elastic_fig10_comparison.py
+|-- rectangular_elastic/          # 新增矩形巷道弹性算例
 `-- requirements.txt
 ```
 
@@ -86,21 +94,30 @@ python train_deep.py
 
 ## 结果与适用范围
 
-本仓库只对应深埋圆形巷道的 `P = 8 MPa` 纯弹性阶段。它不包含矩形巷道、Stage B 弹塑性、FLAC3D 数据监督或 Zone State 历史塑性判断。解析解仅用于绘图后的独立误差诊断，不进入训练损失。
+圆形算例对应 `P = 8 MPa` 纯弹性阶段，解析解仅用于训练后的独立诊断。矩形算例同样对应 `p0 = 10 MPa`、洞壁压力 `P = 8 MPa` 的纯弹性 Stage A；其 FLAC3D CSV 不进入 PINN 训练损失，只用于训练后对照与统一色标。两者均不包含 Stage B 弹塑性或 Zone State 历史塑性判断。
 
 详细物理链条见 [docs/METHOD.md](docs/METHOD.md)，文件来源与整理改动见 [docs/PROVENANCE.md](docs/PROVENANCE.md)，当前权重的可复核误差见 [docs/VALIDATION.md](docs/VALIDATION.md)。
+
+## 矩形巷道快速使用
+
+```bash
+cd rectangular_elastic
+python tests/smoke_test.py
+python plot_pinn_fields.py
+python plot_flac_fields.py
+python plot_pinn_flac_error.py
+```
+
+重新训练使用：
+
+```bash
+python train_rectangular_elastic.py
+```
+
+矩形算例的完整说明见 [`rectangular_elastic/README.md`](rectangular_elastic/README.md)。
 
 ## 发布说明
 
 参考论文 PDF 未包含在仓库中。公开发布前请补充作者信息、论文完整引文，并选择合适的开源许可证；当前目录未代替作者授权任何许可证。
 
-完成上述信息后，可在本目录执行：
-
-```bash
-git init
-git add .
-git commit -m "Initial deep circular tunnel elastic PINN reproduction"
-git branch -M main
-git remote add origin <your-repository-url>
-git push -u origin main
-```
+参考论文 PDF 和 FLAC3D `.sav` 文件未包含在仓库中。公开引用时应同时说明 PINN 物理模型、FLAC3D 对照模型及数据导出方式。
